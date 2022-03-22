@@ -29,8 +29,12 @@ def count_values(a, k):
     >>> count_values([2,2,1,0,1,0,1,3], 3)
     [2, 3, 2, 1]
     """
-    ###TODO
-    pass
+    code = sorted(set(a))
+    count = [0] * (k + 1)
+    for element in a:
+      idx = code.index(element)
+      count[idx] += 1
+    return count     
 
 def test_count_values():
     assert count_values([2,2,1,0,1,0,1,3], 3) == [2, 3, 2, 1]
@@ -46,8 +50,9 @@ def get_positions(counts):
     >>> get_positions([2, 3, 2, 1])
     [0, 2, 5, 7]    
     """
-    ###TODO
-    pass
+    positions = scan(plus, list(), counts)[0]
+    return [0] + positions[:-1]
+    
     
 def test_get_positions():
     assert get_positions([2, 3, 2, 1]) == [0, 2, 5, 7]
@@ -66,8 +71,12 @@ def construct_output(a, positions):
     >>> construct_output([2,2,1,0,1,0,1,3], [0, 2, 5, 7])
     [0,0,1,1,1,2,2,3]    
     """
-    ###TODO
-    pass
+    pivot_map, sorted_array = [0] * len(positions), [0] * len(a)
+    for idx in a:
+        position = positions[idx] + pivot_map[idx]
+        pivot_map[idx] += 1
+        sorted_array[position] = idx
+    return sorted_array
 
 def test_construct_output():
     assert construct_output([2,2,1,0,1,0,1,3], [0, 2, 5, 7]) == [0,0,1,1,1,2,2,3]
@@ -77,24 +86,19 @@ def count_values_mr(a, k):
     Use map-reduce to implement count_values.
     This is done; you'll have to complete count_map and count_reduce.
     """
-    # done.
     int2count = dict(run_map_reduce(count_map, count_reduce, a))
-    return [int2count.get(i,0) for i in range(k+1)]
-
+    return [int2count.get(i, 0) for i in range(k + 1)]
+  
 def test_count_values_mr():
     assert count_values_mr([2,2,1,0,1,0,1,3], 3) == [2, 3, 2, 1]
 
 def count_map(value):
-    ###TODO
-    pass
+    return [(value, 1)]
 
 def count_reduce(group):
-    ###TODO
-    pass
-
+    return group[0], reduce(plus, 0, group[1])
 
 # the below functions are provided for use above.
-
 def run_map_reduce(map_f, reduce_f, mylist):
     # done. 
     pairs = flatten(list(map(map_f, mylist)))
@@ -111,7 +115,6 @@ def collect(pairs):
 def plus(x,y):
     # done. 
     return x + y
-
 
 def scan(f, id_, a):
     # done. 
@@ -139,3 +142,6 @@ def iterate(f, x, a):
     
 def flatten(sequences):
     return iterate(plus, [], sequences)
+
+
+print(get_positions([2, 3, 2, 1]))
